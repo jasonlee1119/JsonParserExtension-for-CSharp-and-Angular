@@ -1,0 +1,9 @@
+{
+    "manifest_version": 3,
+    "name": "Json Parser Extension",
+    "description": "This is a chrome extension for parsing the json string to C# class and TypeScript interface",
+    "version": "1.0.0",
+    "action": {
+      "default_popup": "index.html"
+    }
+  }
