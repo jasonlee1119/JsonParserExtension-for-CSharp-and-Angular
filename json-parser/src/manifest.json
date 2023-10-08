@@ -4,6 +4,7 @@
     "description": "This is a chrome extension for parsing the json string to C# class and TypeScript interface",
     "version": "1.0.0",
     "action": {
-      "default_popup": "index.html"
+      "default_popup": "index.html",
+      "default_icon": "images/json-icon.png"
     }
   }
