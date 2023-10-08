@@ -3,6 +3,12 @@
     "name": "Json Parser Extension",
     "description": "This is a chrome extension for parsing the json string to C# class and TypeScript interface",
     "version": "1.0.0",
+    "icons": {
+      "16": "images/json-icon.png",
+      "32": "images/json-icon.png",
+      "48": "images/json-icon.png",
+      "128": "images/json-icon.png"
+    },
     "action": {
       "default_popup": "index.html",
       "default_icon": "images/json-icon.png"
