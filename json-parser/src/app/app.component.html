@@ -11,12 +11,42 @@
           cols="30"
           formControlName="jsonStringInput">
         </textarea>
+        <br>
+        <span>Output C# Class String: </span>
+        <br>
+        <textarea
+          class="mt-3"
+          rows="10"
+          cols="30"
+          [readOnly]="true"
+          formControlName="cSharpClassString">
+        </textarea>
       </mat-tab>
-      <mat-tab label="Json to Ts Interface"> Content 2 </mat-tab>
+      <mat-tab label="Json to TS Interface">
+        <span>Input Json String: </span>
+        <br>
+        <textarea
+          class="mt-3"
+          rows="10"
+          cols="30"
+          formControlName="jsonStringInput">
+        </textarea>
+        <br>
+        <span>Output TS Interface String: </span>
+        <br>
+        <textarea
+          class="mt-3"
+          rows="10"
+          cols="30"
+          [readOnly]="true"
+          formControlName="typeScriptInterfaceString">
+        </textarea>
+      </mat-tab>
     </mat-tab-group>
     <button
       mat-raised-button
-      color="primary">Convert
+      (click)="resetForm()"
+      color="primary">Reset
     </button>
   </form>
 </div>
