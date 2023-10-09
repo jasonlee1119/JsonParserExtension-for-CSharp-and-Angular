@@ -1,5 +1,8 @@
 <div class="window">
-  <h1>Hello Extension</h1>
+  <mat-toolbar
+    color="primary">
+    <span>Json Parser for C# and TypeScript</span>
+  </mat-toolbar>
   <form [formGroup]="inputForm">
     <mat-tab-group>
       <mat-tab label="Json to C# Class">
@@ -9,7 +12,7 @@
           class="mt-3"
           rows="10"
           cols="30"
-          formControlName="jsonStringInput">
+          formControlName="jsonStringInputCSharp">
         </textarea>
         <br>
         <span>Output C# Class String: </span>
@@ -29,7 +32,7 @@
           class="mt-3"
           rows="10"
           cols="30"
-          formControlName="jsonStringInput">
+          formControlName="jsonStringInputTypeScript">
         </textarea>
         <br>
         <span>Output TS Interface String: </span>
@@ -47,7 +50,23 @@
       mat-raised-button
       (click)="resetForm()"
       color="primary">Reset
+    </button> &nbsp;
+    <button
+      *ngIf="inputForm.controls.cSharpClassString.value &&
+        !inputForm.controls.cSharpClassString.value.startsWith('Invalid')"
+      mat-raised-button
+      class="mat-success"
+      (click)="copyText(0)">Copy C#
+    </button> &nbsp;
+    <button
+      *ngIf="inputForm.controls.typeScriptInterfaceString.value &&
+        !inputForm.controls.typeScriptInterfaceString.value.startsWith('Invalid')"
+      mat-raised-button
+      (click)="copyText(1)"
+      class="mat-success">Copy TS
     </button>
   </form>
 </div>
+
+<p *ngIf="isClickCopyCS || isClickCopyTS">{{ showCopyMessage }}</p>
 

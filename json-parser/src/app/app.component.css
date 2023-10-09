@@ -2,3 +2,8 @@
   height: 500px;
   width: 500px;
 }
+
+.mat-mdc-raised-button.mat-success {
+  background-color: green;
+  color: #fff;
+}

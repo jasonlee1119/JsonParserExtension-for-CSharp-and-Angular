@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -6,16 +6,21 @@ import { FormBuilder, Validators } from '@angular/forms';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit{
   jsonString: string = '';
   accessorString = '{ get; set; }';
   modifierString = 'public';
   dateTimeOffsetPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?\+\d{2}:\d{2}$/;
   dateTimePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/;
-  utcDateTiimePattern =/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
+  utcDateTiimePattern =/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?[Zz]$/;
+  showCopyMessage: string = 'Text has been copied to clipboard!';
+  isClickCopyCS: boolean = false;
+  isClickCopyTS: boolean = false;
 
   inputForm = this.fb.group({
-    jsonStringInput: this.fb.control<string>('', {validators: [Validators.required], nonNullable: true}),
+    jsonStringInputCSharp: this.fb.control<string>('', {validators: [Validators.required], nonNullable: true}),
+    jsonStringInputTypeScript: this.fb.control<string>('', {validators: [Validators.required], nonNullable: true}),
     cSharpClassString: this.fb.control<string>('',{}),
     typeScriptInterfaceString: this.fb.control<string>('',{})
   });
@@ -24,7 +29,11 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.inputForm.controls.jsonStringInput.valueChanges.subscribe((value) => {
+    this.inputForm.controls.jsonStringInputCSharp.valueChanges.subscribe((value) => {
+      if (value !== this.inputForm.controls.jsonStringInputTypeScript.value){
+        this.inputForm.controls.jsonStringInputTypeScript.setValue(value);
+      }
+
       const inputJSON = value;
       const formattedJSON = formatJSON(inputJSON);
 
@@ -37,10 +46,16 @@ export class AppComponent implements OnInit{
       const jsonObject = JSON.parse(formattedJSON);
       const result = this.analyzeJsonObject(jsonObject);
 
-      console.log(result);
       this.inputForm.controls.cSharpClassString.setValue(this.convertToCSharpClass(result));
       this.inputForm.controls.typeScriptInterfaceString.setValue(this.convertToTypeScriptInterface(result));
     });
+
+    this.inputForm.controls.jsonStringInputTypeScript.valueChanges.subscribe((value) => {
+      if (value === this.inputForm.controls.jsonStringInputCSharp.value){
+        return;
+      }
+      this.inputForm.controls.jsonStringInputCSharp.setValue(value);
+    })
   }
 
   resetForm():void{
@@ -65,8 +80,6 @@ export class AppComponent implements OnInit{
     }).join('\n');
     resultString += '\n}';
 
-    console.log(resultString);
-
     return resultString ;
   }
 
@@ -77,8 +90,6 @@ export class AppComponent implements OnInit{
       return `  ${x.name}: ${this.convertTypeScriptTypeString(x.type, x.value)};`;
     }).join('\n');
     resultString += '\n}';
-
-    console.log(resultString);
 
     return resultString ;
   }
@@ -126,6 +137,28 @@ export class AppComponent implements OnInit{
       ? 'DateTimeOffset' : isDateTime
       ? 'DateTime' : 'string';
   }
+
+  copyText(language: number): void{
+    const text = language === Language.CSharp
+      ? this.inputForm.controls.cSharpClassString.value ?? ''
+      : this.inputForm.controls.typeScriptInterfaceString.value ?? ''
+    navigator.clipboard.writeText(text).then(() => {
+      switch(language){
+        case Language.CSharp:
+          this.isClickCopyCS = true;
+          setTimeout(() => {this.isClickCopyCS = false;}, 2500);
+          break;
+        case Language.TypeScript:
+          this.isClickCopyTS = true;
+          setTimeout(() => {this.isClickCopyTS = false;}, 2500);
+          break;
+      }
+    });
+  }
+
+  showToolTip(language: number){
+
+  }
 }
 
 interface ObjectInfo{
@@ -155,7 +188,6 @@ function formatJSON(jsonString: string): string | null {
       const formattedJSON = JSON.stringify(parsedJSON, null, 2);
       return formattedJSON;
     } catch (error) {
-      console.error('Error formatting JSON:', error);
       return null;
     }
   } else {
